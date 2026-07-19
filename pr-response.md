@@ -205,18 +205,14 @@ ids returned by `POST /films`.
 
 ## `git log --oneline` screenshot
 
-Seven Conventional-Commits, no merge commits, rebased linearly onto `main`
-(top commit `bbe206c` below is the current `main` tip, shown for context):
-
-```
-HEAD    docs: add pr-response.md with review responses and design decisions
+![git log --oneline showing conventional commits with no merge commits](docs/git-log.png)
+5c6b747 (HEAD -> feature/watchlist, origin/feature/watchlist) docs: add pr-response.md with review responses and design decisions
 d6fe37e feat: add remove_from_watchlist and public visibility toggle
 a21a13d fix: sort watchlist by date added and resolve film relationship
 b6ef605 test: add watchlist tests for nonexistent film and deduplication
 0dc4c06 fix: add deduplication check to prevent duplicate watchlist entries
 4945fbc fix: rename save_to_watchlist to add_to_watchlist per naming convention
 c26fd8f feat: add watchlist model, service, and endpoints
-bbe206c Merge pull request #2 from ascherj/chore/add-gitignore   (main)
 ```
 
 <!-- If the assignment requires an image, replace the code block above with a
