@@ -3,9 +3,6 @@ tests/test_watchlist.py — CineLog
 
 Tests for the watchlist service. These mirror the fixture and assertion
 structure used in tests/test_collection.py.
-
-Note: the remove tests (stretch) are added in their own commit once
-remove_from_watchlist / NotInWatchlistError exist.
 """
 
 import pytest
@@ -15,8 +12,10 @@ from app import create_app, db
 from models import User, Film, WatchlistEntry
 from services.watchlist_service import (
     add_to_watchlist,
+    remove_from_watchlist,
     get_watchlist,
     AlreadyInWatchlistError,
+    NotInWatchlistError,
 )
 from services.collection_service import FilmNotFoundError
 
@@ -135,3 +134,25 @@ def test_get_watchlist_returns_newest_first(app, sample_user):
         # NOT alphabetical (Alien would win alphabetically).
         assert titles[0] == "Blade Runner"
         assert titles[1] == "Alien"
+
+
+# ── remove_from_watchlist (stretch) ──────────────────────────────────────────
+
+def test_remove_from_watchlist_removes_entry(app, sample_user, sample_film):
+    """Removing a film that is on the watchlist should delete the entry."""
+    with app.app_context():
+        add_to_watchlist(user_id=sample_user, film_id=sample_film)
+
+        assert remove_from_watchlist(user_id=sample_user, film_id=sample_film) is True
+
+        count = WatchlistEntry.query.filter_by(
+            user_id=sample_user, film_id=sample_film
+        ).count()
+        assert count == 0
+
+
+def test_remove_from_watchlist_missing_raises(app, sample_user, sample_film):
+    """Removing a film that isn't on the watchlist should raise NotInWatchlistError."""
+    with app.app_context():
+        with pytest.raises(NotInWatchlistError):
+            remove_from_watchlist(user_id=sample_user, film_id=sample_film)
